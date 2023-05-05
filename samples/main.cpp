@@ -10,6 +10,7 @@ int main() {
 	int ucf, utf;
 	liftOperator lop;
 	while (true) {
+		std::cerr << "Inside main while loop" << std::endl;
 		std::cin >> ucf >> utf;
 		lop.handleInput(ucf, utf);
 	}
