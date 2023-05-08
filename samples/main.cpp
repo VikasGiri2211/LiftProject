@@ -5,7 +5,7 @@
 
 int main() {
 
-	std::cout << "Hey! I'm your lift." << std::endl;
+	std::cout << "Hey! I'm your lift. Enter floor (0 to 16) " << std::endl;
 
 	int ucf, utf;
 	liftOperator lop;
