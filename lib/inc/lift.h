@@ -50,7 +50,6 @@ void assign_lift(int user_floor, int user_destination) {
 				int direction = 0;
 				available = true;
 			}
-
 		}
 
 		if (available) {
