@@ -1,5 +1,6 @@
 set(SOURCES
 src/liftOperator.cpp 
+src/lift.cpp
 
 )
 
