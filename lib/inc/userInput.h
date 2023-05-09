@@ -5,11 +5,19 @@ class userInput {
 public:
 	int user_calling_floor;
 	int user_target_floor;
-	bool distance_up;
+	int distance;
+	bool upwards;
 	void setData(int ucf, int utf) {
 		user_calling_floor = ucf;
 		user_target_floor = utf;
-		distance_up = utf - ucf;
+		distance = utf - ucf;
+		if (distance > 0) {
+			upwards = true;
+		}
+		else {
+			upwards = false;
+		}
+		std::cerr << "upwards set value: " << upwards << std::endl;
 	}
 
 };

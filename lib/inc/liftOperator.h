@@ -1,9 +1,9 @@
 #ifndef LIFTOPERATOR
 #define LIFTOPERATOR
 
-#include<vector>
+#include<map>
+#include<string>
 #include<queue>
-//#include"lift.h"
 #include"userInput.h"
 #include<mutex>
 #include<condition_variable>
@@ -11,7 +11,7 @@
 #include<memory>
 
 class liftOperator {
-	std::vector <std::thread> lifts;
+	std::map<std::string, std::thread> lifts;
 	std::queue<std::unique_ptr<userInput>> ui_queue;
 	std::mutex m_queue_lock;
 	std::condition_variable cv;
