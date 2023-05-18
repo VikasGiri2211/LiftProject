@@ -23,7 +23,7 @@ liftOperator::liftOperator() {
 					if ((!ui_queue.empty()) && (ui_queue.front()->upwards || (!ui_queue.front()->upwards))) {
 						return true;
 					}
-					std::cout << "Waiting For Input" << std::endl;
+					//std::cout << "Waiting For Input" << std::endl;
 					return false;
 					});
 				ui_ptr = std::move(ui_queue.front());
@@ -36,19 +36,19 @@ liftOperator::liftOperator() {
 				bool two = false;
 			for (int i = 0; i < 4; i++) {
 				if (ui_ptr->upwards && lift_ptr->lift_up[i] && ui_ptr->user_calling_floor > lift_ptr->lifts_current_floor[i]) {
-					std::cerr << "first condition: " << std::endl;
+					//std::cerr << "first condition: " << std::endl;
 					lift_ptr->add_stopages(ui_ptr->user_calling_floor, i);
 					lift_ptr->add_stopages(ui_ptr->user_target_floor, i);
 					one = true;
-					std::cerr << "New stopages added to lift: " << i << std::endl;
+					//std::cerr << "New stopages added to lift: " << i << std::endl;
 					break;
 				}
 				else if (!ui_ptr->upwards && !lift_ptr->lift_up[i] && ui_ptr->user_calling_floor < lift_ptr->lifts_current_floor[i]) {
-					std::cerr << "second condition: " << std::endl;
+					//std::cerr << "second condition: " << std::endl;
 					lift_ptr->add_stopages(ui_ptr->user_calling_floor, i);
 					lift_ptr->add_stopages(ui_ptr->user_target_floor, i);
 					two = true;
-					std::cerr << "New stopages added to lift: " << i << std::endl;
+					//std::cerr << "New stopages added to lift: " << i << std::endl;
 					break;
 				}
 			}
@@ -63,17 +63,15 @@ liftOperator::liftOperator() {
 				}
 				}
 			if (nearest_lift != -1) {
-				std::cerr << "Lift" << nearest_lift << " allocated for the nearest movement." << std::endl;
+				//std::cerr << "Nearest lift" << nearest_lift << "is coming." << std::endl;
 				lift_upMutex.lock();
 				if (lift_ptr->lifts_current_floor[nearest_lift] < ui_ptr->user_calling_floor) {
 					lift_ptr->lift_up[nearest_lift] = true;
-					std::cerr << " IN there: " << std::endl;
-
+					//std::cerr << " IN 3: " << std::endl;
 				}
 				else if (lift_ptr->lifts_current_floor[nearest_lift] > ui_ptr->user_calling_floor) {
 					lift_ptr->lift_up[nearest_lift] = false;
-					std::cerr << " IN 1: " << std::endl;
-
+					//std::cerr << " IN 4: " << std::endl;
 				}
 				lift_upMutex.unlock();
 				lift_ptr->add_stopages(ui_ptr->user_calling_floor, nearest_lift);
@@ -82,17 +80,15 @@ liftOperator::liftOperator() {
 				lift_upMutex.lock();
 				if (lift_ptr->lifts_current_floor[nearest_lift] < ui_ptr->user_target_floor) {
 					lift_ptr->lift_up[nearest_lift] = true;
-					std::cerr << " IN 2: " << std::endl;
-
+					//std::cerr << " IN 5: " << std::endl;
 				}
 				else if (lift_ptr->lifts_current_floor[nearest_lift] > ui_ptr->user_target_floor) {
 					lift_ptr->lift_up[nearest_lift] = false;
-					std::cerr << " IN here: " << std::endl;
-
+					//std::cerr << " IN 6: " << std::endl;
 				}
 				lift_upMutex.unlock();
 				lift_ptr->add_stopages(ui_ptr->user_target_floor, nearest_lift);
-				std::cerr << "New stoppages added to Lift " << nearest_lift << std::endl;
+				//std::cerr << "New stoppages added to Lift " << nearest_lift << std::endl;
 			}
 			}
 		}
@@ -102,7 +98,7 @@ liftOperator::liftOperator() {
 liftOperator::~liftOperator() {
 	{                                       // this is scope for unique_lock to unlock mutex at its end.
 		std::unique_lock<std::mutex>(m_queue_lock);
-	std::cerr << "liftOperator destroyed" << std::endl;
+	//std::cerr << "liftOperator destroyed" << std::endl;
 		ui_queue.push(std::unique_ptr<userInput>{nullptr});  // making all threads one by one point to nullptr so that they can exit the infinite loop in constructor.
 	}
 	liftOp_thread.join();

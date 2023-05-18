@@ -4,7 +4,7 @@
 lift::lift() {
 	for (auto i = 0; i < 4; i++) {
 		lifts.emplace_back(std::thread([this, i] {
-					std::cout << "lift created:" << i << std::endl;
+					std::cout << "lift " << i << " Active" << std::endl;
 			while (true) {
 				std::unique_lock<std::mutex> guard(lift_mutex[i]);
 				lift_cv[i].wait(guard, [this, i] {
@@ -19,10 +19,10 @@ lift::lift() {
 						std::this_thread::sleep_for(std::chrono::seconds(1));
 						lifts_current_floor.at(i)++;
 						if (lifts_current_floor.at(i) == target_floor) {
-							std::cout << "Lift " << i << " has arrived at floor " << target_floor << std::endl;
+							std::cout << "Lift " << i << " arrived at floor " << target_floor << std::endl;
 						}
 						else {
-							std::cerr << "Lift " << i << " is at floor " << lifts_current_floor.at(i) << std::endl;
+							std::cerr << "Lift " << i << " at floor " << lifts_current_floor.at(i) << std::endl;
 						}
 					}
 					lift_stoppages.at(i).erase(it);
@@ -35,14 +35,14 @@ lift::lift() {
 						std::this_thread::sleep_for(std::chrono::seconds(1));
 						lifts_current_floor.at(i)--;
 						if (lifts_current_floor.at(i) == target_floor) {
-							std::cout << "Lift " << i << " has arrived at floor " << target_floor << std::endl;
+							std::cout << "Lift " << i << " arrived at floor " << target_floor << std::endl;
 						}
 						else {
-							std::cerr << "Lift " << i << " is at floor " << lifts_current_floor.at(i) << std::endl;
+							std::cerr << "Lift " << i << " at floor " << lifts_current_floor.at(i) << std::endl;
 						}
 					}
 					lift_stoppages.at(i).erase(it);
-					std::cerr << "reached here too: " << std::endl;
+					//std::cerr << "reached here too: " << std::endl;
 				}
 			}}));
 	}

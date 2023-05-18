@@ -17,7 +17,7 @@ public:
 		else {
 			upwards = false;
 		}
-		std::cerr << "upwards set value: " << upwards << std::endl;
+		//std::cerr << "upwards set value: " << upwards << std::endl;
 	}
 
 };
