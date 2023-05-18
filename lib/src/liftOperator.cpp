@@ -67,12 +67,12 @@ liftOperator::liftOperator() {
 				lift_upMutex.lock();
 				if (lift_ptr->lifts_current_floor[nearest_lift] < ui_ptr->user_calling_floor) {
 					lift_ptr->lift_up[nearest_lift] = true;
-					std::cerr << " IN there: " << std::endl;
+					std::cerr << " IN 1: " << std::endl;
 
 				}
 				else if (lift_ptr->lifts_current_floor[nearest_lift] > ui_ptr->user_calling_floor) {
 					lift_ptr->lift_up[nearest_lift] = false;
-					std::cerr << " IN 1: " << std::endl;
+					std::cerr << " IN 2: " << std::endl;
 
 				}
 				lift_upMutex.unlock();
@@ -82,12 +82,12 @@ liftOperator::liftOperator() {
 				lift_upMutex.lock();
 				if (lift_ptr->lifts_current_floor[nearest_lift] < ui_ptr->user_target_floor) {
 					lift_ptr->lift_up[nearest_lift] = true;
-					std::cerr << " IN 2: " << std::endl;
+					std::cerr << " IN 3: " << std::endl;
 
 				}
 				else if (lift_ptr->lifts_current_floor[nearest_lift] > ui_ptr->user_target_floor) {
 					lift_ptr->lift_up[nearest_lift] = false;
-					std::cerr << " IN here: " << std::endl;
+					std::cerr << " IN 4: " << std::endl;
 
 				}
 				lift_upMutex.unlock();
