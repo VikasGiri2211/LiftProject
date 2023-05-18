@@ -1,7 +1,6 @@
-#include<iostream>
-
-#include"liftOperator.h"
-
+#include<iostream> 
+#include"liftOperator.h" 
+ 
 
 int main() {
 
@@ -12,7 +11,7 @@ int main() {
 	while (true) {
 		std::cerr << "Inside main while loop" << std::endl;
 		std::cin >> ucf >> utf;
-		//lop.handleInput(ucf, utf);
+		lop.handleInput(ucf, utf);
 	}
 
 	return 0;
