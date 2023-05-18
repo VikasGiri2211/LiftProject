@@ -1,56 +1,62 @@
 #include"lift.h"
 #include<iostream>
 
-lift::lift(std::string str) :lift_current_floor(0), lift_up(true), name(str) {
-
-	lift_thread = std::thread([this] {
-		while (true) {
-			std::unique_lock<std::mutex> guard(m_set_lock);
-			sivi.wait(guard, [&] { return !stoppages_set.empty(); });
-			if (lift_up) {
-				auto it = stoppages_set.begin();
-				int target_floor = *it;
-				while (lift_current_floor < target_floor) {
-					std::this_thread::sleep_for(std::chrono::seconds(1));
-					lift_current_floor++;
-					if (lift_current_floor == target_floor) {
-						std::cout << "Lift " << name << " has arrived at floor " << target_floor << std::endl;
+lift::lift() {
+	for (auto i = 0; i < 4; i++) {
+		lifts.emplace_back(std::thread([this, i] {
+					std::cout << "lift created:" << i << std::endl;
+			while (true) {
+				std::unique_lock<std::mutex> guard(lift_mutex[i]);
+				lift_cv[i].wait(guard, [this, i] {
+					bool temp = !lift_stoppages.at(i).empty();        //using  at() instead of [] to access vector elements , to avoid out of bound error, if i is invalid.
+					//return !lift_stoppages[i].empty(); 
+					return temp;
+					});
+				if (lift_up[i]) {
+					auto it = lift_stoppages.at(i).begin();
+					int target_floor = *it;
+					while (lifts_current_floor.at(i) < target_floor) {
+						std::this_thread::sleep_for(std::chrono::seconds(1));
+						lifts_current_floor.at(i)++;
+						if (lifts_current_floor.at(i) == target_floor) {
+							std::cout << "Lift " << i << " has arrived at floor " << target_floor << std::endl;
+						}
+						else {
+							std::cerr << "Lift " << i << " is at floor " << lifts_current_floor.at(i) << std::endl;
+						}
 					}
-					else {
-						std::cerr << "Lift " << name << " is at floor " << lift_current_floor << std::endl;
-					}
+					lift_stoppages.at(i).erase(it);
 				}
-				stoppages_set.erase(it);
-			}
-			else if (!lift_up) {
-				auto it = stoppages_set.rbegin();
-				int target_floor = *it;
-				while (lift_current_floor > target_floor) {
-					std::this_thread::sleep_for(std::chrono::seconds(1));
-					lift_current_floor--;
-					if (lift_current_floor == target_floor) {
-						std::cout << "Lift " << name << " has arrived at floor " << target_floor << std::endl;
+				else if (!lift_up[i]) {
+
+					auto it = std::prev(lift_stoppages.at(i).end());     // very important => to access last element of a set.
+					int target_floor = *it;
+					while (lifts_current_floor.at(i) > target_floor) {
+						std::this_thread::sleep_for(std::chrono::seconds(1));
+						lifts_current_floor.at(i)--;
+						if (lifts_current_floor.at(i) == target_floor) {
+							std::cout << "Lift " << i << " has arrived at floor " << target_floor << std::endl;
+						}
+						else {
+							std::cerr << "Lift " << i << " is at floor " << lifts_current_floor.at(i) << std::endl;
+						}
 					}
-					else {
-						std::cerr << "Lift " << name << " is at floor " << lift_current_floor << std::endl;
-					}
+					lift_stoppages.at(i).erase(it);
+					std::cerr << "reached here too: " << std::endl;
 				}
-				stoppages_set.erase(it.base());
-			}
-
-		}});
-
+			}}));
+	}
 }
 
-void lift::add_stopages(int floor) {
-	std::unique_lock<std::mutex> guard(m_set_lock);
-	stoppages_set.insert(floor);
-	sivi.notify_all();
+void lift::add_stopages(int floor , int i) {
+	std::unique_lock<std::mutex> guard(lift_mutex[i]);
+	lift_stoppages.at(i).insert(floor);
+	lift_cv[i].notify_one();
 };
 
 lift::~lift() {
-	if (lift_thread.joinable()) {
-		lift_thread.join();
+	for (auto& t : lifts) {
+		t.join();
 	}
-	std::cerr << "lift destroyed" << std::endl;
+    std::cerr << "lift destroyed" << std::endl;
 }

@@ -1,8 +1,8 @@
 set(SOURCES
-src/lift3.cpp
+src/liftOperator.cpp 
+src/lift.cpp
+
 )
-#src/operate.cpp 
-#src/lift2.cpp
 
 
 add_library(myLib ${SOURCES})  
